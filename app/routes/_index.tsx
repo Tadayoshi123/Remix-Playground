@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Link } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/node";
 
 import { getArticles, type ArticleResponse } from "../services/strapi.server";
@@ -72,6 +72,7 @@ export default function Index() {
           </div>
         </div>
         
+        
         <ArticleGrid articles={articles.data || []} />
         
         {'error' in data && data.error && (
@@ -81,12 +82,6 @@ export default function Index() {
           </div>
         )}
         
-        {'debugInfo' in data && data.debugInfo && (
-          <details className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <summary className="text-lg font-semibold text-gray-700 cursor-pointer">API Response Debug</summary>
-            <pre className="mt-2 p-2 bg-gray-100 overflow-auto text-sm">{data.debugInfo}</pre>
-          </details>
-        )}
       </section>
     </Layout>
   );

@@ -84,6 +84,42 @@ export async function getArticles(): Promise<ArticleResponse> {
   }
 }
 
+export async function getArticleById(id: number): Promise<SingleArticleResponse> {
+  try {
+    // Méthode 1: Utiliser le filtre par ID, plus fiable car le format de réponse est cohérent avec getArticles
+    const apiUrl = `${STRAPI_URL}/api/articles?filters[id][$eq]=${id}&populate=*`;
+    console.log(`Fetching article by ID from: ${apiUrl}`);
+    
+    const response = await fetch(apiUrl, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error(`API response not OK: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`Error response: ${errorText}`);
+      throw new Error(`Failed to fetch article with ID ${id}: ${response.status} ${response.statusText}`);
+    }
+    
+    const result = await response.json();
+    console.log(`API Response for ID ${id}:`, JSON.stringify(result, null, 2));
+    
+    if (!result.data || result.data.length === 0) {
+      console.error(`Article not found with ID: ${id}`);
+      throw new Error(`Article not found: ${id}`);
+    }
+    
+    console.log(`Article fetched successfully. ID: ${result.data[0].id}`);
+    return { data: result.data[0] };
+  } catch (error) {
+    console.error(`Error in getArticleById for ID '${id}':`, error);
+    throw error;
+  }
+}
+
 export async function getArticleBySlug(slug: string): Promise<SingleArticleResponse> {
   try {
     const apiUrl = `${STRAPI_URL}/api/articles?filters[slug][$eq]=${slug}&populate=*`;
