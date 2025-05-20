@@ -14,7 +14,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
     );
   }
 
-  const { title = "Untitled", description = "", slug = "#", cover, category, author } = article;
+  const { title = "Untitled", description = "", slug, id, cover, category, author } = article;
+  
+  // Utiliser directement l'ID si le slug est null (sans préfixe 'id-')
+  const articlePath = slug || id.toString();
   
   const imageUrl = cover?.formats?.thumbnail?.url || cover?.url;
   const fullImageUrl = imageUrl ? `http://localhost:1337${imageUrl}` : '/images/placeholder.jpg';
@@ -51,7 +54,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           )}
           
           <Link 
-            to={`/articles/${slug || '#'}`}
+            to={`/articles/${articlePath}`}
             className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
           >
             Read more

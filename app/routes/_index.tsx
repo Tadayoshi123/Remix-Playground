@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Link } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/node";
 
 import { getArticles, type ArticleResponse } from "../services/strapi.server";
@@ -69,6 +69,30 @@ export default function Index() {
           <h2 className="text-2xl font-bold text-gray-900">Latest Articles</h2>
           <div className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
             {articles.data.length} articles trouvés
+          </div>
+        </div>
+        
+        {/* Notice d'information sur les liens directs */}
+        <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="text-lg font-semibold text-blue-700 mb-2">Accès direct aux articles</h3>
+          <p className="text-blue-600 mb-2">
+            Vous pouvez accéder directement aux articles par leur ID:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mt-3">
+            {articles.data.map(article => (
+              <Link 
+                key={article.id}
+                to={`/articles/${article.id}`}
+                className="px-3 py-2 bg-white rounded shadow-sm hover:shadow-md transition-shadow text-center"
+              >
+                Article #{article.id}: {article.title.substring(0, 15)}{article.title.length > 15 ? '...' : ''}
+              </Link>
+            ))}
+          </div>
+          <div className="mt-4">
+            <p className="text-sm text-blue-500">
+              Pour déboguer la réponse de l&apos;API, essayez <Link to={`/debug/${articles.data[0]?.id || 15}`} className="underline">cette page</Link>.
+            </p>
           </div>
         </div>
         
