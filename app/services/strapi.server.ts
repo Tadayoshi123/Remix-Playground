@@ -154,3 +154,120 @@ export async function getArticleBySlug(slug: string): Promise<SingleArticleRespo
     throw error;
   }
 } 
+
+// User interfaces
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  
+}
+
+export interface LoginResponse {
+  jwt: string;
+  user: User;
+}
+
+export interface ErrorResponse {
+  error: {
+    status: number;
+    name: string;
+    message: string;
+    details?: unknown;
+  };
+}
+
+// Authentication functions
+export async function loginUser(identifier: string, password: string): Promise<LoginResponse> {
+  try {
+    const apiUrl = `${STRAPI_URL}/api/auth/local`;
+    console.log(`Logging in user at: ${apiUrl}`);
+    
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        identifier,
+        password,
+      }),
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('Login failed:', data.error);
+      throw data as ErrorResponse;
+    }
+    
+    console.log('User logged in successfully');
+    return data as LoginResponse;
+  } catch (error) {
+    console.error('Error in loginUser:', error);
+    throw error;
+  }
+}
+
+export async function registerUser(username: string, email: string, password: string): Promise<LoginResponse> {
+  try {
+    const apiUrl = `${STRAPI_URL}/api/auth/local/register`;
+    console.log(`Registering user at: ${apiUrl}`);
+    
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('Registration failed:', data.error);
+      throw data as ErrorResponse;
+    }
+    
+    console.log('User registered successfully');
+    return data as LoginResponse;
+  } catch (error) {
+    console.error('Error in registerUser:', error);
+    throw error;
+  }
+}
+
+export async function getUserProfile(token: string): Promise<User> {
+  try {
+    const apiUrl = `${STRAPI_URL}/api/users/me`;
+    console.log(`Fetching user profile from: ${apiUrl}`);
+    
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('Failed to fetch user profile:', data.error);
+      throw data as ErrorResponse;
+    }
+    
+    console.log('User profile fetched successfully');
+    return data as User;
+  } catch (error) {
+    console.error('Error in getUserProfile:', error);
+    throw error;
+  }
+}
