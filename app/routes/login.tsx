@@ -12,11 +12,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     // Use the service function to login
     const data = await loginUser(email, password);
     
+    // Log the response to see what we get
+    console.log("Login successful, response:", JSON.stringify(data, null, 2));
+    
     // In a real app, you would save the token to a cookie or session here
     
+    // Make sure the JWT is properly encoded for URL
+    const encodedToken = encodeURIComponent(data.jwt);
+    
     // For now, redirect to profile with token in URL (not secure for production)
-    return redirect(`/profile?token=${data.jwt}`);
+    return redirect(`/profile?token=${encodedToken}`);
   } catch (error) {
+    console.error("Login error:", error);
     const errResponse = error as ErrorResponse;
     return json({ 
       error: errResponse.error?.message || "An error occurred during login" 
@@ -60,7 +67,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 bg-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
               />
             </div>
           </div>
@@ -80,7 +87,7 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 bg-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
               />
             </div>
           </div>

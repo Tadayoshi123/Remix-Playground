@@ -1,6 +1,6 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async () => {
   // In a real implementation, you would:
   // 1. Clear the auth token from cookies or session
   // 2. Possibly call Strapi logout endpoint if needed

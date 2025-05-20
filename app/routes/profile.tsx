@@ -1,28 +1,31 @@
 import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useEffect } from "react";
-import { getUserProfile, ErrorResponse } from "../services/strapi.server";
+import { getUserProfile } from "../services/strapi.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   // Get token from URL query parameter
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
   
+  console.log("Profile loader - Token from URL:", token ? "Token exists" : "No token");
+  
   // For a real implementation, you'd use cookies or sessions to store the token
   // This is just a placeholder implementation
   if (!token) {
     // If no token is found, redirect to login
+    console.log("Profile loader - No token, redirecting to login");
     return redirect("/login");
   }
 
   try {
     // Use the service function to get the user profile
+    console.log("Profile loader - Fetching user profile with token");
     const userData = await getUserProfile(token);
+    
+    console.log("Profile loader - User data received:", JSON.stringify(userData, null, 2));
 
-    return json({ 
-      user: userData,
-      token 
-    });
+    // Directly return the user data as the response
+    return json(userData);
   } catch (error) {
     console.error("Error fetching profile:", error);
     return redirect("/login");
@@ -30,48 +33,49 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Profile() {
-  const { user, token } = useLoaderData<typeof loader>();
-
-  // In a real app, you'd want to store the token in a cookie or session
-  useEffect(() => {
-    // Just to demonstrate that we have the token
-    console.log("Token available:", token);
-  }, [token]);
-
+  const userData = useLoaderData<typeof loader>();
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Your Profile</h1>
         </div>
-
+        
         <div className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">User Information</h2>
+            
             <div className="mt-4 grid grid-cols-1 gap-4">
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Username</p>
-                <p className="font-medium">{user.username}</p>
+                <p className="font-medium">{userData.username}</p>
               </div>
               
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium">{user.email}</p>
+                <p className="font-medium">{userData.email}</p>
               </div>
               
-              {user.firstName && (
-                <div className="border-b pb-2">
-                  <p className="text-sm text-gray-500">First Name</p>
-                  <p className="font-medium">{user.firstName}</p>
-                </div>
-              )}
+              <div className="border-b pb-2">
+                <p className="text-sm text-gray-500">User ID</p>
+                <p className="font-medium">{userData.id}</p>
+              </div>
               
-              {user.lastName && (
-                <div className="border-b pb-2">
-                  <p className="text-sm text-gray-500">Last Name</p>
-                  <p className="font-medium">{user.lastName}</p>
-                </div>
-              )}
+              <div className="border-b pb-2">
+                <p className="text-sm text-gray-500">Provider</p>
+                <p className="font-medium">{userData.provider}</p>
+              </div>
+              
+              <div className="border-b pb-2">
+                <p className="text-sm text-gray-500">Account Status</p>
+                <p className="font-medium">{userData.confirmed ? 'Confirmed' : 'Not Confirmed'}</p>
+              </div>
+              
+              <div className="border-b pb-2">
+                <p className="text-sm text-gray-500">Member Since</p>
+                <p className="font-medium">{userData.createdAt ? new Date(userData.createdAt).toLocaleDateString() : 'N/A'}</p>
+              </div>
             </div>
           </div>
           

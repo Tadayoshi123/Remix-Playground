@@ -160,7 +160,17 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  
+  provider?: string;
+  confirmed?: boolean;
+  blocked?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  role?: {
+    id: number;
+    name: string;
+    description?: string;
+    type?: string;
+  };
 }
 
 export interface LoginResponse {
@@ -258,6 +268,9 @@ export async function getUserProfile(token: string): Promise<User> {
     });
     
     const data = await response.json();
+    
+    // Log the entire response to debug
+    console.log('Raw user profile response:', JSON.stringify(data, null, 2));
     
     if (!response.ok) {
       console.error('Failed to fetch user profile:', data.error);
