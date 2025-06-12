@@ -255,7 +255,7 @@ export async function registerUser(username: string, email: string, password: st
 
 export async function getUserProfile(token: string): Promise<User> {
   try {
-    const apiUrl = `${STRAPI_URL}/api/users/me`;
+    const apiUrl = `${STRAPI_URL}/api/users/me?populate=*`;
     console.log(`Fetching user profile from: ${apiUrl}`);
     
     const response = await fetch(apiUrl, {
@@ -267,18 +267,38 @@ export async function getUserProfile(token: string): Promise<User> {
       }
     });
     
-    const data = await response.json();
-    
-    // Log the entire response to debug
-    console.log('Raw user profile response:', JSON.stringify(data, null, 2));
-    
     if (!response.ok) {
-      console.error('Failed to fetch user profile:', data.error);
-      throw data as ErrorResponse;
+      const errorData = await response.json();
+      console.error('Failed to fetch user profile:', errorData.error);
+      throw errorData as ErrorResponse;
     }
     
-    console.log('User profile fetched successfully');
-    return data as User;
+    // Parse the response JSON
+    const responseData = await response.json();
+    
+    // Normalize the user data - in some Strapi versions, the data might be directly returned
+    // or it might be wrapped in a specific structure
+    let userData: User;
+    
+    if (responseData.data) {
+      // Handle case when Strapi returns { data: { ... } }
+      if (responseData.data.attributes) {
+        // Handle case when Strapi returns { data: { attributes: { ... } } }
+        userData = {
+          id: responseData.data.id,
+          ...responseData.data.attributes
+        };
+      } else {
+        // Handle case when Strapi returns { data: { id, username, ... } }
+        userData = responseData.data;
+      }
+    } else {
+      // Handle case when Strapi returns { id, username, ... } directly
+      userData = responseData;
+    }
+    
+    console.log('User profile fetched and normalized successfully');
+    return userData;
   } catch (error) {
     console.error('Error in getUserProfile:', error);
     throw error;

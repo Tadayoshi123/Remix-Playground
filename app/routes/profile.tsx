@@ -7,22 +7,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
   
-  console.log("Profile loader - Token from URL:", token ? "Token exists" : "No token");
-  
   // For a real implementation, you'd use cookies or sessions to store the token
   // This is just a placeholder implementation
   if (!token) {
-    // If no token is found, redirect to login
-    console.log("Profile loader - No token, redirecting to login");
     return redirect("/login");
   }
 
   try {
     // Use the service function to get the user profile
-    console.log("Profile loader - Fetching user profile with token");
     const userData = await getUserProfile(token);
-    
-    console.log("Profile loader - User data received:", JSON.stringify(userData, null, 2));
 
     // Directly return the user data as the response
     return json(userData);
@@ -33,6 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Profile() {
+  // Get the normalized user data directly from the loader
   const userData = useLoaderData<typeof loader>();
   
   return (
@@ -49,32 +43,32 @@ export default function Profile() {
             <div className="mt-4 grid grid-cols-1 gap-4">
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Username</p>
-                <p className="font-medium">{userData.username}</p>
+                <p className="font-medium text-gray-500">{userData.username}</p>
               </div>
               
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium">{userData.email}</p>
+                <p className="font-medium text-gray-500">{userData.email}</p>
               </div>
               
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">User ID</p>
-                <p className="font-medium">{userData.id}</p>
+                <p className="font-medium text-gray-500">{userData.id}</p>
               </div>
               
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Provider</p>
-                <p className="font-medium">{userData.provider}</p>
+                <p className="font-medium text-gray-500">{userData.provider}</p>
               </div>
               
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Account Status</p>
-                <p className="font-medium">{userData.confirmed ? 'Confirmed' : 'Not Confirmed'}</p>
+                <p className="font-medium text-gray-500">{userData.confirmed ? 'Confirmed' : 'Not Confirmed'}</p>
               </div>
               
               <div className="border-b pb-2">
                 <p className="text-sm text-gray-500">Member Since</p>
-                <p className="font-medium">{userData.createdAt ? new Date(userData.createdAt).toLocaleDateString() : 'N/A'}</p>
+                <p className="font-medium text-gray-500">{userData.createdAt ? new Date(userData.createdAt).toLocaleDateString() : 'N/A'}</p>
               </div>
             </div>
           </div>
