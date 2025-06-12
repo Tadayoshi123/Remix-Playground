@@ -43,26 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return (
-    <>
-      <header className="bg-white shadow">
-        <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <a href="/" className="text-xl font-bold text-indigo-600">ArticleBlog</a>
-          <div className="flex space-x-4">
-            <a href="/" className="text-gray-700 hover:text-indigo-600">Home</a>
-            <a href="/articles" className="text-gray-700 hover:text-indigo-600">Articles</a>
-            <a href="/about" className="text-gray-700 hover:text-indigo-600">About</a>
-            <a href="/contact" className="text-gray-700 hover:text-indigo-600">Contact</a>
-            <a href="/login" className="text-gray-700 hover:text-indigo-600">Login</a>
-            <a href="/register" className="text-gray-700 hover:text-indigo-600">Register</a>
-          </div>
-        </nav>
-      </header>
-      <main>
-        <Outlet />
-      </main>
-    </>
-  );
+  return <Outlet />; 
 }
 
 export function ErrorBoundary() {

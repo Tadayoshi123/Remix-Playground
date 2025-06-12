@@ -1,5 +1,3 @@
-import { Link } from "@remix-run/react";
-
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -7,36 +5,18 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-blue-600">
-                ArticleBlog
-              </Link>
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link 
-                to="/" 
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium"
-              >
-                Home
-              </Link>
-              <Link 
-                to="/articles" 
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium"
-              >
-                Articles
-              </Link>
-              <Link 
-                to="/about" 
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium"
-              >
-                About
-              </Link>
-            </nav>
+      <header className="bg-white shadow">
+        <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <a href="/" className="text-xl font-bold text-indigo-600">ArticleBlog</a>
+          <div className="flex space-x-4">
+            <a href="/" className="text-gray-700 hover:text-indigo-600">Home</a>
+            <a href="/articles" className="text-gray-700 hover:text-indigo-600">Articles</a>
+            <a href="/about" className="text-gray-700 hover:text-indigo-600">About</a>
+            <a href="/contact" className="text-gray-700 hover:text-indigo-600">Contact</a>
+            <a href="/login" className="text-gray-700 hover:text-indigo-600">Login</a>
+            <a href="/register" className="text-gray-700 hover:text-indigo-600">Register</a>
           </div>
-        </div>
+        </nav>
       </header>
       
       <main className="flex-grow bg-gray-50">
